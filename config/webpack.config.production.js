@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const moment = require('moment')
 
 const rules = require('./webpack.rules')
@@ -16,7 +17,24 @@ module.exports = {
     filename: 'main.js'
   },
   optimization: {
-    minimize: false
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          ie8: true,
+          warnings: true,
+          output: {
+            ascii_only: true,
+            quote_keys: true
+          },
+          compress: {
+            drop_console: true,
+            properties: false
+          }
+        }
+      }),
+      new OptimizeCSSAssetsPlugin({}),
+      new webpack.BannerPlugin(`${moment().format('YYYY-MM-DD HH:mm:ss')}`)
+    ]
   },
   module: {
     rules: rules.concat([
@@ -117,26 +135,12 @@ module.exports = {
 
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].css'
+      filename: '[name].css',
+      chunkFilename: "[id].css"
     }),
     new HtmlWebpackPlugin({
-      template: 'template/index.html',
+      template: 'template/index.prod.html',
       hash: true
-    }),
-    new UglifyJsPlugin({
-      uglifyOptions: {
-        ie8: true,
-        warnings: true,
-        output: {
-          ascii_only: true,
-          quote_keys: true
-        },
-        compress: {
-          drop_console: true,
-          properties: false
-        }
-      }
-    }),
-    new webpack.BannerPlugin(`${moment().format('YYYY-MM-DD HH:mm:ss')}`)
+    })
   ]
 }
