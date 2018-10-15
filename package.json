@@ -5,7 +5,8 @@
   "main": "build/main.js",
   "scripts": {
     "start": "BABEL_ENV=development webpack-dev-server -w --open --env=development",
-    "build": "BABEL_ENV=production webpack --env=production"
+    "build": "BABEL_ENV=production webpack --env=production",
+    "deploy": "npm run build && scp ./build/* ubuntu@domain:/home/ubuntu/"
   },
   "author": {
     "name": ""
