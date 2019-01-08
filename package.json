@@ -6,6 +6,7 @@
   "scripts": {
     "start": "BABEL_ENV=development webpack-dev-server -w --open --env=development",
     "build": "BABEL_ENV=production webpack --env=production",
+    "prettier": "prettier src/**/*.js --write",
     "deploy": "npm run build && scp ./build/* ubuntu@domain:/home/ubuntu/"
   },
   "author": {
@@ -37,6 +38,7 @@
     "moment": "^2.22.2",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "postcss-loader": "^3.0.0",
+    "prettier": "^1.15.3",
     "style-loader": "^0.23.0",
     "svg-url-loader": "^2.3.2",
     "uglifyjs-webpack-plugin": "^1.3.0",
