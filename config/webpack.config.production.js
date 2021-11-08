@@ -94,7 +94,7 @@ module.exports = {
           // Inline files smaller than 10 kB (10240 bytes)
           limit: 10 * 1024,
           name: 'image/[hash].[ext]'
-        },
+        }
       },
       {
         test: /\.svg$/,
@@ -107,25 +107,6 @@ module.exports = {
           // (they’re unnecessary in most cases)
           noquotes: true
         }
-      },
-      {
-        test: /\.(jpe?g|png|gif|svg)$/,
-        loader: 'image-webpack-loader',
-        options: {
-          mozjpeg: {
-            quality: 80
-          },
-          // optipng.enabled: false will disable optipng
-          optipng: {
-            enabled: false
-          },
-          pngquant: {
-            quality: '65-90',
-            speed: 4
-          }
-        },
-        // This will apply the loader before the other ones
-        enforce: 'pre'
       }
     ])
   },
