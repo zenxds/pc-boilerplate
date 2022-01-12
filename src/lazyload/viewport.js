@@ -21,7 +21,7 @@ function getViewportHeight() {
  * rect.top 元素上线距离viewport上线的距离
  * rect.bottom 元素下线距离viewport上线的距离
  */
-function isElementInViewport(el) {
+export function isElementInViewport(el) {
   const rect = el.getBoundingClientRect()
 
   return (

@@ -1,39 +1,36 @@
 // https://www.maizhiying.me/posts/2017/03/01/webpack-babel-ie8-support.html
 const path = require('path')
 const webpack = require('webpack')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
-const moment = require('moment')
+const TerserPlugin = require("terser-webpack-plugin")
+const dayjs = require('dayjs')
 
 const rules = require('./webpack.rules')
 module.exports = {
   mode: 'production',
+  target: 'web',
   entry: './src/index.js',
   output: {
     path: path.join(__dirname, '../build'),
-    filename: 'main.js'
+    filename: 'main.js',
+    clean: {}
   },
   optimization: {
+    minimize: true,
     minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
-          ie8: true,
-          warnings: true,
-          output: {
-            ascii_only: true,
-            quote_keys: true
-          },
+      new webpack.BannerPlugin(`${dayjs().format('YYYY-MM-DD HH:mm:ss')}`),
+      new TerserPlugin({
+        parallel: true,
+        extractComments: false,
+        terserOptions: {
           compress: {
-            drop_console: true,
-            properties: false
+            drop_console: true
           }
         }
       }),
-      new OptimizeCSSAssetsPlugin({}),
-      new webpack.BannerPlugin(`${moment().format('YYYY-MM-DD HH:mm:ss')}`)
+      new CssMinimizerPlugin()
     ]
   },
   module: {
@@ -47,17 +44,12 @@ module.exports = {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              minimize: true
-            }
-          },
+          'css-loader',
           {
             loader: 'postcss-loader',
             options: {
-              config: {
-                path: 'config/postcss.config.js'
+              postcssOptions: {
+                config: path.join(__dirname, 'postcss.config.js')
               }
             }
           }
@@ -67,17 +59,12 @@ module.exports = {
         test: /\.less$/,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              minimize: true
-            }
-          },
+          'css-loader',
           {
             loader: 'postcss-loader',
             options: {
-              config: {
-                path: 'config/postcss.config.js'
+              postcssOptions: {
+                config: path.join(__dirname, 'postcss.config.js')
               }
             }
           },
@@ -86,41 +73,20 @@ module.exports = {
             options: {}
           }
         ]
-      },
-      {
-        test: /\.(jpe?g|png|gif)$/,
-        loader: 'url-loader',
-        options: {
-          // Inline files smaller than 10 kB (10240 bytes)
-          limit: 10 * 1024,
-          name: 'image/[hash].[ext]'
-        }
-      },
-      {
-        test: /\.svg$/,
-        loader: 'svg-url-loader',
-        options: {
-          // Inline files smaller than 10 kB (10240 bytes)
-          limit: 10 * 1024,
-          name: 'image/[hash].[ext]',
-          // Remove the quotes from the url
-          // (they’re unnecessary in most cases)
-          noquotes: true
-        }
       }
     ])
   },
   plugins: [
-    new WebpackCleanupPlugin(),
     new webpack.DefinePlugin({
 
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[name].[hash].css'
+      chunkFilename: '[name].[hash].css',
+      filename: '[name].css'
     }),
     new HtmlWebpackPlugin({
       template: 'template/index.prod.html',
+      inject: 'body',
       hash: true
     })
   ]

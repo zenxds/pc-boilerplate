@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const ESLintPlugin = require('eslint-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const dxMock = require('dx-mock')
 
@@ -11,12 +12,12 @@ module.exports = {
     path: path.join(__dirname, '../build'),
     filename: 'main.js'
   },
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: rules.concat([
       {
         test: /\.jsx?$/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: ['babel-loader'],
         exclude: /node_modules/
       },
       {
@@ -27,8 +28,8 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              config: {
-                path: 'config/postcss.config.js'
+              postcssOptions: {
+                config: path.join(__dirname, 'postcss.config.js')
               }
             }
           }
@@ -42,8 +43,8 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              config: {
-                path: 'config/postcss.config.js'
+              postcssOptions: {
+                config: path.join(__dirname, 'postcss.config.js')
               }
             }
           },
@@ -52,31 +53,48 @@ module.exports = {
             options: {}
           }
         ]
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)$/,
-        use: 'url-loader?limit=8192&name=image/[hash].[ext]'
       }
     ])
   },
   plugins: [
+    new ESLintPlugin(),
     new HtmlWebpackPlugin({
-      template: 'template/index.html'
+      template: 'template/index.html',
+      inject: 'body',
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
     })
   ],
   devServer: {
-    contentBase: [
-      path.join(__dirname, '../build'),
-      path.join(__dirname, '..')
+    static: [
+      {
+        directory: path.join(__dirname, '..')
+      },
+      {
+        directory: path.join(__dirname, '../build')
+      }
     ],
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false
+      }
+    },
     hot: true,
     host: '0.0.0.0',
-    disableHostCheck: true,
-    before(app){
-      dxMock(app, { root: path.join(__dirname, '../api')})
+    allowedHosts: 'all',
+    onBeforeSetupMiddleware: function (devServer) {
+      if (!devServer) {
+        throw new Error('webpack-dev-server is not defined')
+      }
+
+      dxMock(devServer.app, { root: path.join(__dirname, '../api') })
+    },
+    proxy: {
+      '/dev': {
+        target: '',
+        pathRewrite: { '^/dev': '' },
+      },
     }
   }
 }

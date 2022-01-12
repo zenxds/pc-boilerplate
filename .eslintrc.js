@@ -1,65 +1,41 @@
 module.exports = {
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 7,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 7,
+    ecmaFeatures: {
+      experimentalObjectRestSpread: true,
+    },
   },
-  "env": {
-    "browser": true,
-    "node": true,
-    "es6": true
+  extends: ['eslint:recommended', 'prettier'],
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
   },
-  "plugins": [
-    "import"
-  ],
-  "globals": {
-    "API_SERVER": true
+  plugins: ['import'],
+  globals: {
+    API_SERVER: true,
   },
-  "rules": {
-    "indent": [
-      "error",
-      2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
-    "quotes": [
-      "warn",
-      "single"
-    ],
-    "no-unused-vars": [
-      "warn"
-    ],
-    "no-console": [
-      "error",
+  rules: {
+    indent: ['error', 2],
+    'linebreak-style': ['error', 'unix'],
+    quotes: ['warn', 'single'],
+    'no-unused-vars': ['warn'],
+    'no-console': [
+      'error',
       {
-        "allow": [
-          "log",
-          "warn",
-          "error"
-        ]
-      }
+        allow: ['log', 'warn', 'error'],
+      },
     ],
-    "no-empty": [
-      "error",
+    'no-empty': [
+      'error',
       {
-        "allowEmptyCatch": true
-      }
+        allowEmptyCatch: true,
+      },
     ],
-    "semi": [
-      "error",
-      "never"
-    ],
-    "eol-last": [
-      "warn"
-    ],
-    "comma-dangle": [
-      "error",
-      "never"
-    ]
-  }
+    semi: ['error', 'never'],
+    'eol-last': ['warn'],
+    'comma-dangle': ['error', 'never'],
+  },
 }
