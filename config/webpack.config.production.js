@@ -2,9 +2,9 @@
 const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const TerserPlugin = require("terser-webpack-plugin")
+const TerserPlugin = require('terser-webpack-plugin')
 const dayjs = require('dayjs')
 
 const rules = require('./webpack.rules')
@@ -15,7 +15,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, '../build'),
     filename: 'main.js',
-    clean: {}
+    clean: {},
   },
   optimization: {
     minimize: true,
@@ -26,19 +26,19 @@ module.exports = {
         extractComments: false,
         terserOptions: {
           compress: {
-            drop_console: true
-          }
-        }
+            drop_console: true,
+          },
+        },
       }),
-      new CssMinimizerPlugin()
-    ]
+      new CssMinimizerPlugin(),
+    ],
   },
   module: {
     rules: rules.concat([
       {
         test: /\.jsx?$/,
         use: ['babel-loader'],
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
@@ -49,11 +49,11 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                config: path.join(__dirname, 'postcss.config.js')
-              }
-            }
-          }
-        ]
+                config: path.join(__dirname, 'postcss.config.js'),
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.less$/,
@@ -64,30 +64,28 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                config: path.join(__dirname, 'postcss.config.js')
-              }
-            }
+                config: path.join(__dirname, 'postcss.config.js'),
+              },
+            },
           },
           {
             loader: 'less-loader',
-            options: {}
-          }
-        ]
-      }
-    ])
+            options: {},
+          },
+        ],
+      },
+    ]),
   },
   plugins: [
-    new webpack.DefinePlugin({
-
-    }),
+    new webpack.DefinePlugin({}),
     new MiniCssExtractPlugin({
       chunkFilename: '[name].[hash].css',
-      filename: '[name].css'
+      filename: '[name].css',
     }),
     new HtmlWebpackPlugin({
       template: 'template/index.prod.html',
       inject: 'body',
-      hash: true
-    })
-  ]
+      hash: true,
+    }),
+  ],
 }

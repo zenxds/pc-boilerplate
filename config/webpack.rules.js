@@ -12,5 +12,5 @@ module.exports = [
     generator: {
       filename: 'assets/images/[hash][ext]',
     },
-  }
+  },
 ]
